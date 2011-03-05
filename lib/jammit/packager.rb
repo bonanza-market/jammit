@@ -60,7 +60,7 @@ module Jammit
       files << file_name = File.join(output_dir, Jammit.filename(package, extension, suffix))
       File.open(file_name, 'wb+') {|f| f.write(contents) }
       if Jammit.gzip_assets
-        files << zip_name = "#{file_name}.gz"
+        files << zip_name = File.join(output_dir, Jammit.filename(package, "gz.#{extension}", suffix))
         Zlib::GzipWriter.open(zip_name, Zlib::BEST_COMPRESSION) {|f| f.write(contents) }
       end
       File.utime(mtime, mtime, *files)
