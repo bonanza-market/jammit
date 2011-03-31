@@ -136,7 +136,7 @@ module Jammit
           true
         else
           since = cached.map {|file| File.mtime(file) }.min
-          config_mtime > since || pack[:paths].any? {|src| File.mtime(src) > since }
+          config_mtime >= since || pack[:paths].any? {|src| File.mtime(src) >= since }
         end
       end
     end
