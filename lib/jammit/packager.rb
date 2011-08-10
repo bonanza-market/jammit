@@ -62,6 +62,9 @@ module Jammit
       if Jammit.gzip_assets
         files << zip_name = File.join(output_dir, Jammit.filename(package, "gz.#{extension}", suffix))
         Zlib::GzipWriter.open(zip_name, Zlib::BEST_COMPRESSION) {|f| f.write(contents) }
+
+        gzipped_ok = Zlib::GzipReader.open(zip_name) { |gz| gz.read.present? } rescue false
+        raise OutputNotWritable, "Jammit failed to gzip \"#{zip_name}\"" unless gzipped_ok
       end
       File.utime(mtime, mtime, *files)
     end
