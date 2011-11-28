@@ -80,7 +80,11 @@ module Jammit
     def compress_css(paths, variant=nil, asset_url=nil)
       @asset_contents = {}
       css = concatenate_and_tag_assets(paths, variant)
-      css = @css_compressor.compress(css) if Jammit.compress_assets
+    	if Jammit.compress_assets
+      	new_css = @css_compressor.compress(css)
+      	raise OutputNotWritable, "YUI compressor could not write CSS included in paths #{paths.inspect}. Do all files contain valid CSS?" if new_css.blank? && css.present?
+      	css = new_css
+			end
       case variant
       when nil      then return css
       when :datauri then return with_data_uris(css)
