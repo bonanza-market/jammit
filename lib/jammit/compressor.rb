@@ -71,7 +71,16 @@ module Jammit
       else
         js = concatenate(paths - jst_paths) + compile_jst(jst_paths)
       end
-      Jammit.compress_assets ? @js_compressor.compress(js) : js
+      
+      begin
+        Jammit.compress_assets ? @js_compressor.compress(js) : js
+      rescue Exception => e
+        if e.message =~ /compression failed/
+          raise "Failed to compress [#{ paths.join ', '}] due to javascript errors"
+        else
+          raise e
+        end
+      end
     end
 
     # Concatenate and compress a list of CSS stylesheets. When compressing a
